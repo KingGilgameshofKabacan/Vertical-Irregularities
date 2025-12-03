@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vertical Irregularities Exam - Prof. Olivo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Inter:wght@300;400;600;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0fdf4; /* Light Green bg */
+        }
+        
+        .blueprint-bg {
+            background-color: #064e3b; /* Emerald-900 */
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .mono-font {
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .shake-animation {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="blueprint-bg text-white p-6 shadow-lg border-b-4 border-green-500">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold tracking-tight">Vertical Structural Irregularities</h1>
+                <p class="text-green-200 mt-1 mono-font">NSCP 2015 / ASCE 7-22 | Prof. Olivo</p>
+            </div>
+            <div class="hidden md:block text-right">
+                <p class="text-sm opacity-70">Duration: Self-paced</p>
+                <p class="text-sm opacity-70">Items: 30</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow p-4 md:p-8">
+        <div class="max-w-3xl mx-auto">
+            
+            <!-- Start Screen -->
+            <div id="start-screen" class="bg-white rounded-xl shadow-xl overflow-hidden fade-in">
+                <div class="p-8 text-center">
+                    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 text-green-600">
+                        <i class="fas fa-layer-group text-3xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Topic Overview</h2>
+                    <p class="text-gray-600 mb-8 leading-relaxed">
+                        "Class, vertical irregularities are often more critical than horizontal ones because they can lead to story mechanisms and collapse. 
+                        This exam covers the definitions in <b>Table 208-9</b>, specific percentage thresholds for Soft Stories and Weak Stories, and the 
+                        special load combinations required when these exist. Watch out for the 'Extreme' definitions from ASCE 7-22."
+                    </p>
+                    <button onclick="startExam()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg transition transform hover:-translate-y-1 shadow-lg flex items-center mx-auto gap-2">
+                        <span>Start Exam</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quiz Screen -->
+            <div id="quiz-screen" class="hidden fade-in">
+                <!-- Progress Bar -->
+                <div class="mb-6 bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                    <div id="progress-bar" class="bg-green-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100">
+                    <div class="bg-gray-50 p-4 border-b border-gray-200 flex justify-between items-center">
+                        <span class="font-bold text-gray-500 mono-font">QUESTION <span id="current-question-num">1</span>/30</span>
+                        <span class="text-sm bg-green-100 text-green-800 py-1 px-3 rounded-full font-medium" id="score-display">Score: 0</span>
+                    </div>
+
+                    <div class="p-8">
+                        <div class="min-h-[120px] flex items-center justify-center mb-8">
+                            <h3 id="question-text" class="text-xl md:text-2xl font-medium text-gray-800 text-center leading-relaxed">
+                                Loading question...
+                            </h3>
+                        </div>
+
+                        <div class="max-w-md mx-auto relative">
+                            <input type="text" id="user-answer" 
+                                class="w-full p-4 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-4 focus:ring-green-100 transition text-lg text-center"
+                                placeholder="Type your answer here..."
+                                autocomplete="off"
+                                onkeypress="handleEnter(event)">
+                            
+                            <!-- Feedback Icon -->
+                            <div id="feedback-icon" class="absolute right-4 top-4 hidden">
+                                <i class="fas fa-check-circle text-green-500 text-2xl"></i>
+                            </div>
+                        </div>
+
+                        <!-- Feedback Text -->
+                        <div id="feedback-area" class="mt-6 text-center min-h-[60px] hidden">
+                            <p id="feedback-msg" class="text-lg font-bold"></p>
+                            <p id="correct-answer-display" class="text-gray-500 text-sm mt-1"></p>
+                        </div>
+
+                        <div class="mt-8 flex justify-center gap-4">
+                            <button id="submit-btn" onclick="submitAnswer()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition w-full md:w-auto">
+                                Submit Answer
+                            </button>
+                            <button id="next-btn" onclick="nextQuestion()" class="hidden bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-8 rounded-lg shadow-md transition w-full md:w-auto flex items-center justify-center gap-2">
+                                <span>Next</span>
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Screen -->
+            <div id="result-screen" class="hidden fade-in">
+                <div class="bg-white rounded-xl shadow-xl overflow-hidden">
+                    <div class="p-8 text-center">
+                        <div class="mb-6">
+                            <div class="inline-block p-4 rounded-full bg-yellow-100 text-yellow-600 mb-2">
+                                <i class="fas fa-ruler-vertical text-4xl"></i>
+                            </div>
+                            <h2 class="text-3xl font-bold text-gray-800">Exam Completed</h2>
+                        </div>
+                        
+                        <div class="grid grid-cols-3 gap-4 max-w-lg mx-auto mb-8">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <p class="text-gray-500 text-xs uppercase font-bold">Total Score</p>
+                                <p class="text-3xl font-bold text-green-600" id="final-score">0</p>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <p class="text-gray-500 text-xs uppercase font-bold">Percentage</p>
+                                <p class="text-3xl font-bold text-green-600" id="final-percent">0%</p>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <p class="text-gray-500 text-xs uppercase font-bold">Status</p>
+                                <p class="text-xl font-bold text-green-600 flex items-center justify-center h-9" id="pass-fail">--</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-green-50 border-l-4 border-green-500 p-4 text-left max-w-2xl mx-auto mb-8">
+                            <p class="font-bold text-green-800 mb-1">Prof. Olivo says:</p>
+                            <p id="professor-comment" class="text-green-700 italic">"..."</p>
+                        </div>
+
+                        <div id="wrong-answers-container" class="text-left hidden mb-8">
+                            <h3 class="text-lg font-bold text-gray-700 mb-4 border-b pb-2">Review Areas:</h3>
+                            <div id="wrong-answers-list" class="space-y-3 max-h-60 overflow-y-auto pr-2">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                        <button onclick="location.reload()" class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition">
+                            Take Exam Again
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="text-center p-6 text-gray-500 text-sm">
+        <p>&copy; 2025 Earthquake Engineering Dept. | Vertical Irregularities Module</p>
+    </footer>
+
+    <script>
+        // Exam Data extracted from the Vertical Irregularities PDF
+        const questions = [
+            {
+                id: 1,
+                question: "Irregularity Type 1 in NSCP 2015 Table 208-9 is known as?",
+                answers: ["Stiffness Irregularity", "Soft Story", "Stiffness"],
+                explanation: "Defined based on lateral stiffness Ki vs Ki+1."
+            },
+            {
+                id: 2,
+                question: "A soft story exists if the lateral stiffness is less than what percentage of the story above?",
+                answers: ["70%", "70 percent", "70"],
+                explanation: "Ki < 0.70 * Ki+1."
+            },
+            {
+                id: 3,
+                question: "A soft story exists if the lateral stiffness is less than what percentage of the average stiffness of the three stories above?",
+                answers: ["80%", "80 percent", "80"],
+                explanation: "Ki < 0.80 * (Avg of 3 above)."
+            },
+            {
+                id: 4,
+                question: "Irregularity Type 2 in NSCP 2015 Table 208-9 is known as?",
+                answers: ["Weight Irregularity", "Mass Irregularity", "Weight"],
+                explanation: "Mass irregularity is Type 2."
+            },
+            {
+                id: 5,
+                question: "Mass irregularity exists if the effective mass of any story is more than what percentage of the adjacent story?",
+                answers: ["150%", "150 percent", "150"],
+                explanation: "Mass > 1.5 * Adjacent Mass."
+            },
+            {
+                id: 6,
+                question: "A roof that is _______ than the floor below need not be considered for Mass Irregularity.",
+                answers: ["Lighter"],
+                explanation: "Exception clause in Table 208-9 Type 2."
+            },
+            {
+                id: 7,
+                question: "Irregularity Type 3 in NSCP 2015 Table 208-9 is known as?",
+                answers: ["Vertical Geometric Irregularity", "Vertical Geometric"],
+                explanation: "Relates to horizontal dimension changes."
+            },
+            {
+                id: 8,
+                question: "Vertical Geometric Irregularity exists if the horizontal dimension is more than what percentage of the adjacent story?",
+                answers: ["130%", "130 percent", "130"],
+                explanation: "Dimension > 1.3 * Adjacent Dimension."
+            },
+            {
+                id: 9,
+                question: "Irregularity Type 4 in NSCP 2015 Table 208-9 is known as?",
+                answers: ["In-Plane Discontinuity Irregularity", "In-Plane Discontinuity"],
+                explanation: "An in-plane offset of the LFRS elements."
+            },
+            {
+                id: 10,
+                question: "In-Plane Discontinuity exists if the offset is greater than the _______ of those elements.",
+                answers: ["Length"],
+                explanation: "Offset > Length."
+            },
+            {
+                id: 11,
+                question: "Irregularity Type 5 in NSCP 2015 Table 208-9 is known as?",
+                answers: ["Weak Story Irregularity", "Weak Story", "Discontinuity in Capacity"],
+                explanation: "Based on story strength."
+            },
+            {
+                id: 12,
+                question: "A Weak Story exists if the story strength is less than what percentage of the story above?",
+                answers: ["80%", "80 percent", "80"],
+                explanation: "Strength < 0.80 * Strength Above."
+            },
+            {
+                id: 13,
+                question: "According to ASCE 7-22, an 'Extreme Soft Story' exists if stiffness is less than what percentage of the story above?",
+                answers: ["60%", "60 percent", "60"],
+                explanation: "Ki < 0.60 * Ki+1 (Type 1b)."
+            },
+            {
+                id: 14,
+                question: "According to ASCE 7-22, an 'Extreme Weak Story' exists if strength is less than what percentage of the story above?",
+                answers: ["65%", "65 percent", "65"],
+                explanation: "Fi < 0.65 * Fi+1 (Type 5b)."
+            },
+            {
+                id: 15,
+                question: "What is the specific load combination term used for irregularities involving Overstrength ($E_m$)?",
+                answers: ["Estimated Maximum Earthquake Force", "Em"],
+                explanation: "Em = Omega * Eh."
+            },
+            {
+                id: 16,
+                question: "Soft Story or Weight Irregularity does NOT exist if no story drift ratio is greater than how many times the drift ratio of the story above?",
+                answers: ["1.3", "1.3 times"],
+                explanation: "Exception clause 208.4.5.2."
+            },
+            {
+                id: 17,
+                question: "What structural element type is exempt from Vertical Geometric Irregularity considerations?",
+                answers: ["One-story penthouses", "Penthouse"],
+                explanation: "Table 208-9 Type 3 exception."
+            },
+            {
+                id: 18,
+                question: "In the formula K = F/delta, what does 'K' stand for?",
+                answers: ["Stiffness", "Lateral Stiffness"],
+                explanation: "Force divided by displacement."
+            },
+            {
+                id: 19,
+                question: "Structures with Extreme Weak Story shall not be over how many stories?",
+                answers: ["Two", "2", "2 stories"],
+                explanation: "Or 9 meters height limit."
+            },
+            {
+                id: 20,
+                question: "Which irregularity is also called 'Discontinuity In Capacity'?",
+                answers: ["Weak Story Irregularity", "Weak Story"],
+                explanation: "Refers to strength/capacity rather than stiffness."
+            },
+            {
+                id: 21,
+                question: "In the load combination 0.9D + 1.0Em, what does 'D' stand for?",
+                answers: ["Dead Load", "Dead"],
+                explanation: "Standard notation."
+            },
+            {
+                id: 22,
+                question: "For Shear Walls, 'ri' is the max value of wall shear multiplied by what factor?",
+                answers: ["3/lw", "3 over lw"],
+                explanation: "10/lw in Imperial, 3/lw in SI (approx)."
+            },
+            {
+                id: 23,
+                question: "The Reliability/Redundancy Factor is denoted by what Greek symbol?",
+                answers: ["Rho", "p"],
+                explanation: "Used in E = rho*Eh + Ev."
+            },
+            {
+                id: 24,
+                question: "Rho shall not exceed what value for Special Moment Resisting Frames?",
+                answers: ["1.25"],
+                explanation: "Maximum limit for SMRF."
+            },
+            {
+                id: 25,
+                question: "The seismic force amplification factor is denoted by what symbol?",
+                answers: ["Omega_o", "Omega", "Overstrength Factor"],
+                explanation: "Used to calculate Em."
+            },
+            {
+                id: 26,
+                question: "If Stiffness Ki = 500 and Ki+1 = 1000, is this a Soft Story? (Yes/No)",
+                answers: ["Yes"],
+                explanation: "500/1000 = 0.50, which is < 0.70."
+            },
+            {
+                id: 27,
+                question: "If Strength Fi = 900 and Fi+1 = 1000, is this a Weak Story? (Yes/No)",
+                answers: ["No"],
+                explanation: "900/1000 = 0.90, which is > 0.80. (Not weak)."
+            },
+            {
+                id: 28,
+                question: "According to ASCE 7-22, Extreme Soft Story is NOT permitted in which Seismic Design Categories?",
+                answers: ["E or F", "E, F", "E and F"],
+                explanation: "High seismic risk categories."
+            },
+            {
+                id: 29,
+                question: "Which table in NSCP 2015 lists Vertical Structural Irregularities?",
+                answers: ["Table 208-9", "208-9"],
+                explanation: "Table 208-10 is Horizontal, 208-9 is Vertical."
+            },
+            {
+                id: 30,
+                question: "What is the formula for Em?",
+                answers: ["Omega_o * Eh", "Omega * Eh"],
+                explanation: "Overstrength factor times horizontal earthquake load."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let wrongAnswers = [];
+
+        // DOM Elements
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const questionText = document.getElementById('question-text');
+        const currentQuestionNum = document.getElementById('current-question-num');
+        const scoreDisplay = document.getElementById('score-display');
+        const progressBar = document.getElementById('progress-bar');
+        const userAnswerInput = document.getElementById('user-answer');
+        const feedbackArea = document.getElementById('feedback-area');
+        const feedbackMsg = document.getElementById('feedback-msg');
+        const correctAnswerDisplay = document.getElementById('correct-answer-display');
+        const submitBtn = document.getElementById('submit-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const feedbackIcon = document.getElementById('feedback-icon');
+
+        function startExam() {
+            startScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = questions[currentQuestionIndex];
+            questionText.textContent = q.question;
+            currentQuestionNum.textContent = currentQuestionIndex + 1;
+            progressBar.style.width = `${((currentQuestionIndex) / questions.length) * 100}%`;
+            
+            // Reset UI
+            userAnswerInput.value = '';
+            userAnswerInput.disabled = false;
+            userAnswerInput.focus();
+            userAnswerInput.classList.remove('border-green-500', 'border-red-500', 'bg-green-50', 'bg-red-50');
+            feedbackArea.classList.add('hidden');
+            feedbackIcon.classList.add('hidden');
+            submitBtn.classList.remove('hidden');
+            nextBtn.classList.add('hidden');
+        }
+
+        function cleanString(str) {
+            return str.toLowerCase().replace(/[^a-z0-9]/g, '');
+        }
+
+        function checkAnswer(input, answers) {
+            const cleanInput = cleanString(input);
+            return answers.some(ans => cleanString(ans) === cleanInput);
+        }
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') {
+                if (!submitBtn.classList.contains('hidden')) {
+                    submitAnswer();
+                } else {
+                    nextQuestion();
+                }
+            }
+        }
+
+        function submitAnswer() {
+            const userVal = userAnswerInput.value.trim();
+            if (!userVal) return;
+
+            const currentQ = questions[currentQuestionIndex];
+            const isCorrect = checkAnswer(userVal, currentQ.answers);
+
+            userAnswerInput.disabled = true;
+            submitBtn.classList.add('hidden');
+            nextBtn.classList.remove('hidden');
+            feedbackArea.classList.remove('hidden');
+            feedbackIcon.classList.remove('hidden');
+
+            const icon = feedbackIcon.querySelector('i');
+
+            if (isCorrect) {
+                score++;
+                scoreDisplay.textContent = `Score: ${score}`;
+                
+                userAnswerInput.classList.add('border-green-500', 'bg-green-50');
+                feedbackMsg.textContent = "Correct!";
+                feedbackMsg.className = "text-xl font-bold text-green-600";
+                correctAnswerDisplay.textContent = currentQ.explanation;
+                
+                icon.className = "fas fa-check-circle text-green-500 text-3xl fade-in";
+            } else {
+                userAnswerInput.classList.add('border-red-500', 'bg-red-50', 'shake-animation');
+                
+                // Remove shake class after animation
+                setTimeout(() => {
+                    userAnswerInput.classList.remove('shake-animation');
+                }, 500);
+
+                feedbackMsg.textContent = "Incorrect";
+                feedbackMsg.className = "text-xl font-bold text-red-600";
+                correctAnswerDisplay.innerHTML = `Correct answer: <b>${currentQ.answers[0]}</b><br><span class='text-xs'>(${currentQ.explanation})</span>`;
+                
+                icon.className = "fas fa-times-circle text-red-500 text-3xl fade-in";
+
+                wrongAnswers.push({
+                    question: currentQ.question,
+                    yourAnswer: userVal,
+                    correctAnswer: currentQ.answers[0]
+                });
+            }
+            
+            // Focus next button for easy keyboard navigation
+            nextBtn.focus();
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            quizScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+
+            const percentage = Math.round((score / questions.length) * 100);
+            document.getElementById('final-score').textContent = `${score}/${questions.length}`;
+            document.getElementById('final-percent').textContent = `${percentage}%`;
+
+            const passFailEl = document.getElementById('pass-fail');
+            const commentEl = document.getElementById('professor-comment');
+            
+            if (percentage >= 90) {
+                passFailEl.textContent = "PASSED (Excellent)";
+                passFailEl.classList.add('text-green-600');
+                commentEl.textContent = `"Outstanding! You have mastered Vertical Irregularities. Your structures will be safe and compliant."`;
+            } else if (percentage >= 75) {
+                passFailEl.textContent = "PASSED";
+                passFailEl.classList.add('text-blue-600');
+                commentEl.textContent = `"Good job. You know the main thresholds. Double check the Extreme Soft Story limits."`;
+            } else if (percentage >= 60) {
+                passFailEl.textContent = "CONDITIONAL";
+                passFailEl.classList.add('text-yellow-600');
+                commentEl.textContent = `"You passed, but stiffness vs strength irregularities are confusing you. Review Table 208-9."`;
+            } else {
+                passFailEl.textContent = "FAILED";
+                passFailEl.classList.add('text-red-600');
+                commentEl.textContent = `"A Soft Story collapse is catastrophic. You must learn these definitions before designing anything."`;
+            }
+
+            if (wrongAnswers.length > 0) {
+                const wrongContainer = document.getElementById('wrong-answers-container');
+                const wrongList = document.getElementById('wrong-answers-list');
+                wrongContainer.classList.remove('hidden');
+                
+                wrongAnswers.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = "bg-red-50 p-3 rounded border-l-4 border-red-400 text-sm";
+                    div.innerHTML = `
+                        <p class="font-medium text-gray-800 mb-1">${item.question}</p>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-red-600">You: ${item.yourAnswer}</span>
+                            <span class="text-green-700 font-bold">Ans: ${item.correctAnswer}</span>
+                        </div>
+                    `;
+                    wrongList.appendChild(div);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
